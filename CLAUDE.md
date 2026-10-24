@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: copyleft-next-0.3.1 -->
-# linux-config-fragments
+# kfragments
 
 Modular Linux kernel `.config` fragments for building custom kernels for
 QEMU/KVM guests, composed with the kernel's own

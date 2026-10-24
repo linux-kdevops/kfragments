@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: copyleft-next-0.3.1 -->
-# Linux Kernel Configuration Fragments
+# kfragments
 
 Modular kernel configuration fragments for building custom Linux kernels
 targeting QEMU/KVM virtual machines. Feature fragments default to `=m`
