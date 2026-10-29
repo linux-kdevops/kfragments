@@ -344,6 +344,10 @@ Consequences caught so far:
   glibc registers for every thread, `memfd_secret()`, and the
   architecture's CRC routines that file system checksums use.
   `core/core.config` writes them.
+- `CONFIG_RANDOMIZE_KSTACK_OFFSET` (default `y` with an `EXPERT`
+  prompt): gates `randomize_kstack_offset=` and
+  `RANDOMIZE_KSTACK_OFFSET_DEFAULT`. `core/hardening.config` writes
+  it.
 
 The general rule: if a Kconfig symbol says `default y` and a
 fragment needs it, set it explicitly. Do not rely on the default
