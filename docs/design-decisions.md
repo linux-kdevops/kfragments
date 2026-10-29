@@ -336,6 +336,9 @@ Consequences caught so far:
   `xfs_logprint` and `xfs_db` fail with `EBUSY` on a mounted
   scratch device (fstests xfs/017, xfs/176).
   `storage/block-layer.config` writes it.
+- `CONFIG_SYSCTL` (default `y` with an `EXPERT` prompt;
+  `PROC_SYSCTL` through 7.2, see `core/core.config`): provides
+  `/proc/sys`. `core/core.config` writes both names.
 
 The general rule: if a Kconfig symbol says `default y` and a
 fragment needs it, set it explicitly. Do not rely on the default
