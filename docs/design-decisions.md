@@ -339,6 +339,11 @@ Consequences caught so far:
 - `CONFIG_SYSCTL` (default `y` with an `EXPERT` prompt;
   `PROC_SYSCTL` through 7.2, see `core/core.config`): provides
   `/proc/sys`. `core/core.config` writes both names.
+- `CONFIG_RSEQ`, `CONFIG_SECRETMEM` and `CONFIG_CRC_OPTIMIZATIONS`
+  (default `y` with an `EXPERT` prompt): provide `rseq()`, which
+  glibc registers for every thread, `memfd_secret()`, and the
+  architecture's CRC routines that file system checksums use.
+  `core/core.config` writes them.
 
 The general rule: if a Kconfig symbol says `default y` and a
 fragment needs it, set it explicitly. Do not rely on the default
