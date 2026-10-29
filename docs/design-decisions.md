@@ -326,6 +326,9 @@ Consequences caught so far:
   gates `NVME_RDMA`. `storage/nvme-fabrics.config` writes it.
 - `CONFIG_MTRR` (def_bool `y` with an `EXPERT` prompt): gates
   `X86_PAT`. `arch/x86-extras.config` writes it.
+- `CONFIG_MODIFY_LDT_SYSCALL` (default `y` with an `EXPERT`
+  prompt): gates `X86_16BIT`, which gates `X86_ESPFIX64`.
+  `arch/x86-extras.config` writes it.
 - `CONFIG_IPV6` (menuconfig bool, default `y` as of 7.1, commit
   `309b905deee5`): gates the entire IPv6 stack and every IPv6
   netfilter symbol. `core/systemd.config` writes it explicitly. It
