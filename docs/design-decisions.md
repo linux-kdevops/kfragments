@@ -4,10 +4,10 @@
 This project ships modular kernel configuration fragments for building
 custom Linux kernels targeting QEMU/KVM virtual machines. The central
 mechanism is the kernel's own `scripts/kconfig/merge_config.sh`:
-users pick a set of fragments, merge them on top of `allnoconfig`, and
-run `make olddefconfig` to produce a `.config`. This document explains
-why the fragments are organised the way they are and the upstream
-rules that constrain them.
+users pick a set of fragments, merge them with `merge_config.sh -n`,
+and run `make olddefconfig` to produce a `.config`. This document
+explains why the fragments are organised the way they are and the
+upstream rules that constrain them.
 
 The fragments aim to be as composable as possible. When a value is
 fixed, it is either required by Kconfig, a correctness constraint
@@ -20,15 +20,17 @@ listed below with the upstream reference that justifies it.
 ### `merge_config.sh -n`
 
 All fragment usage assumes the kernel tree's `merge_config.sh` with
-the `-n` flag. `-n` selects `allnoconfig` as the base: every symbol
-starts at `n`. Fragments then turn on what the user wants. See:
-`scripts/kconfig/merge_config.sh` and `scripts/kconfig/Makefile`
-(`allnoconfig` target).
+the `-n` flag. The first file on the command line is the base file,
+either empty or the output of `make allnoconfig`; the fragments are
+merged on top of it, and `-n` resolves the result with `allnoconfig`:
+every prompted symbol no file sets is `n`. Fragments then turn on
+what the user wants. See: `scripts/kconfig/merge_config.sh` and
+`scripts/kconfig/Makefile` (`allnoconfig` target). "Kconfig defaults
+are lost to allnoconfig" covers how the two base files differ.
 
-The alternative base is `olddefconfig` (keeps the existing `.config`),
-but allnoconfig gives a reproducible starting point: the final
-`.config` depends only on the fragment list, not on whatever happened
-to be in the working directory.
+Without `-n`, `merge_config.sh` resolves with `alldefconfig`, which
+gives every unset symbol its Kconfig default and so turns on much
+more than the fragments ask for.
 
 ### Last-wins
 
@@ -355,6 +357,15 @@ Consequences caught so far:
 The general rule: if a Kconfig symbol says `default y` and a
 fragment needs it, set it explicitly. Do not rely on the default
 to survive the merge.
+
+The output of `make allnoconfig`, used as the base file, has the
+opposite trap: it is computed with `MODULES` off and, on x86, with
+`64BIT` and `SMP` off, and its `int` and choice values win over what
+the fragments imply. On x86 it carries `NR_CPUS=1`, which
+`arch/x86_64.config` overrides with 64. The base file also pins
+`FRAME_WARN` at 1280, the frame-pointer unwinder and
+`DRIVER_DEFERRED_PROBE_TIMEOUT=0`. No fragment sets these three, and
+an empty base file gets their 64-bit, modular defaults.
 
 ## Everything built-in: dropping `CONFIG_MODULES`
 
