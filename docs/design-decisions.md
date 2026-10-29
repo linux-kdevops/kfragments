@@ -397,9 +397,10 @@ module-less kernel without it.
 
 ## Excluded configs
 
-Several symbols that appear in the kernel's `kvm_guest.config` or
-in similar downstream fragments are deliberately not in any
-fragment. The list below records why.
+Several symbols are deliberately not in any fragment: some appear in
+the kernel's `kvm_guest.config` or in similar downstream fragments,
+others default to `y` and are lost to `allnoconfig`. The list below
+records why.
 
 **`CONFIG_DNOTIFY`.** Replaced by `INOTIFY_USER` (in
 `systemd.config`) and `fanotify`. The kernel Kconfig help itself
@@ -435,6 +436,18 @@ the headless serial-console model.
 `CONFIG_UEVENT_HELPER_PATH`, `CONFIG_BPFILTER`.** Removed from the
 kernel entirely. Keeping them in any fragment would make it fail
 against a modern tree.
+
+**`CONFIG_VT_CONSOLE`, `CONFIG_VGA_CONSOLE`, `CONFIG_ISA_DMA_API`,
+`CONFIG_PCSPKR_PLATFORM`, `CONFIG_SGETMASK_SYSCALL`, `CONFIG_UID16`,
+`CONFIG_EARLY_PRINTK`, `CONFIG_FIRMWARE_MEMMAP`.** On x86_64 each
+defaults to `y` behind an `EXPERT` prompt (`UID16` once
+`IA32_EMULATION` is on), and `allnoconfig` answers it `n` on an empty
+base file once `core/core.config` sets `EXPERT` (see "Kconfig
+defaults are lost to allnoconfig"). The headless serial-console
+model has no VT or VGA console; ISA DMA, the PC speaker, and the
+sgetmask and 16-bit UID syscalls are legacy; `earlycon=` covers early
+serial output; and kexec-tools reads `/proc/iomem` when
+`/sys/firmware/memmap` is missing.
 
 ## `kvm_guest.config` is not referenced
 
