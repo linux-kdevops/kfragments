@@ -111,10 +111,12 @@ recovery kernel where modprobe is not available).
 
 `scripts/verify_config.sh` checks that the values you requested in the
 fragments actually appear in the final `.config`. It handles the
-last-wins rule and prints a summary of `=y`/`=m` totals:
+last-wins rule and prints a summary of `=y`/`=m` totals. Pass `-k`
+the kernel tree, `<linux>` below;
+[docs/verification.md](docs/verification.md) explains why.
 
 ```sh
-scripts/verify_config.sh ../build/.config \
+scripts/verify_config.sh -k <linux> ../build/.config \
     $C/core/64bit.config $C/core/modules.config $C/core/core.config \
     $C/core/systemd.config $C/core/initrd.config $C/arch/x86_64.config \
     $C/core/acpi-poweroff.config $C/fs/ext4.config \

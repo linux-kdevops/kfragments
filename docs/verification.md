@@ -22,22 +22,27 @@ prints a summary of user `=y`/`=m` and infrastructure `=y`/`=m` totals at the
 end, so a regression in fragment count is visible at a glance.
 
 ```sh
-scripts/verify_config.sh ../build/.config \
+scripts/verify_config.sh -k <linux> ../build/.config \
     $C/core/64bit.config $C/core/modules.config $C/core/core.config \
     $C/core/systemd.config $C/core/initrd.config $C/arch/x86_64.config \
     $C/core/acpi-poweroff.config $C/fs/ext4.config \
     $C/virt/virtio-net.config $C/core/localversion.config
 ```
 
-`$C` is this project's `kernel/configs/` directory. Pass the first argument as
-the built `.config`, then the same fragments, in the same order, you gave to
-`merge_config.sh`. Run it after every fragment change before committing.
+`$C` is this project's `kernel/configs/` directory and `<linux>` the kernel
+tree. Pass the built `.config`, then the same fragments, in the same order, you
+gave to `merge_config.sh`. Run it after every fragment change before
+committing.
 
 A fragment or defconfig may name a symbol only an out-of-tree branch defines,
 such as the Rust XArray ones. On a tree without it, that symbol is absent for
 the second reason above, yet nothing is wrong. Give `-k` the kernel tree and
 the script reports such a symbol as `SKIP` instead of a mismatch; a symbol the
 tree's Kconfig does define and the `.config` dropped still fails.
+
+A fragment may also keep a symbol's old name for older trees.
+`core/core.config` requests both `PROC_SYSCTL` and `SYSCTL`, its 7.3 name, so
+on 7.3 and later `PROC_SYSCTL` is absent and the check passes only with `-k`.
 
 ## Verifying a defconfig
 
