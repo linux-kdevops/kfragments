@@ -192,16 +192,6 @@ and found `BPF_LSM`, `DEBUG_INFO_BTF`, and `NETFILTER_XT_MATCH_BPF`
 silently absent. Self-containment makes the fragment its own source
 of truth.
 
-**The one exception: major optional subsystems.** A symbol whose
-Kconfig dependency is itself a large optional subsystem the fragment
-has no business choosing may stay conditional on a companion
-fragment, as long as the header says so and the rest of the fragment
-self-contains. `IMA_LSM_RULES` in `security/ima-full.config` needs
-an LSM (`SELINUX`/`SMACK`/`APPARMOR`); an IMA fragment must not pick
-an LSM for the user, so that one symbol only lands when
-`security/lsm-modules.config` is also on the line. The header states
-this; everything else in the fragment composes on the base alone.
-
 Self-containment sometimes duplicates infrastructure across
 `builtin/` fragments. `builtin/virtio-fs.config`,
 `builtin/virtio-net.config`, and `builtin/vsock.config` all set
