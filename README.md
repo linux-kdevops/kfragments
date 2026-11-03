@@ -12,7 +12,7 @@ topic into topical subdirectories under `kernel/configs/`:
 
 ```
 core/       base kernel, modules, init system, boot, firmware, hardening
-arch/       per-architecture (x86_64 / arm64) knobs and extras
+arch/       per-architecture (x86_64 / arm64 / riscv) knobs and extras
 fs/         filesystems
 storage/    block layer, device mapper, MD, NVMe, NVDIMM, CXL
 virt/       virtio device drivers, KVM host

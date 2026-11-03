@@ -233,7 +233,8 @@ Some symbols cannot follow the `=m` default because of Kconfig
 rules or functional requirements. These are documented per-fragment
 but also worth listing here.
 
-**Serial console drivers (`x86_64.config`, `arm64.config`).**
+**Serial console drivers (`x86_64.config`, `arm64.config`,
+`riscv.config`).**
 `SERIAL_8250_CONSOLE` and `SERIAL_AMBA_PL011_CONSOLE` are bool
 symbols that explicitly require their driver to be `=y`
 (`depends on SERIAL_8250=y` etc., not just enabled). Without the
