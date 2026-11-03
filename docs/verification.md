@@ -43,6 +43,8 @@ tree's Kconfig does define and the `.config` dropped still fails.
 A fragment may also keep a symbol's old name for older trees.
 `core/core.config` requests both `PROC_SYSCTL` and `SYSCTL`, its 7.3 name, so
 on 7.3 and later `PROC_SYSCTL` is absent and the check passes only with `-k`.
+A tree may also keep the old name as a `transitional` symbol, which Kconfig
+reads from an old `.config` and never writes; `-k` skips such a symbol too.
 
 ## Verifying a defconfig
 

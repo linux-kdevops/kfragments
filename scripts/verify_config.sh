@@ -15,7 +15,8 @@
 # HAVE_*, CC_*, AS_*, GENERIC_*, X86_*).
 #
 # With -k, a requested symbol that the kernel tree's Kconfig does not
-# define (an out-of-tree driver on a mainline tree) is reported as skipped
+# define (an out-of-tree driver on a mainline tree), or keeps only as a
+# transitional one (an old name after a rename), is reported as skipped
 # rather than as a mismatch.
 #
 # Usage:
@@ -37,7 +38,8 @@ usage() {
 	printf 'Usage: %s [-k <srctree>] <dotconfig> <fragment> [<fragment> ...]\n\n' "$0"
 	printf 'Verify that config values requested in fragments match the\n'
 	printf 'final .config. Exit code 0 if all match, 1 if any mismatch.\n'
-	printf 'With -k, skip symbols the Kconfig of <srctree> does not define.\n'
+	printf 'With -k, skip symbols the Kconfig of <srctree> does not define,\n'
+	printf 'or keeps only as transitional ones.\n'
 	exit 1
 }
 
@@ -79,17 +81,35 @@ TMP_LOOKUP=$(mktemp "$TMP_LOOKUP")
 TMP_REQUESTED="${TMPDIR:-/tmp}/verify_requested.XXXXXX"
 TMP_REQUESTED=$(mktemp "$TMP_REQUESTED")
 
-# The symbols the kernel tree defines, for -k.
+# The symbols the kernel tree defines, for -k, as "D CONFIG_FOO", and as
+# "T CONFIG_FOO" those it keeps only as transitional ones, which Kconfig
+# reads from an old .config and never writes.
+TMP_KCONFIG="${TMPDIR:-/tmp}/verify_kconfig.XXXXXX"
+TMP_KCONFIG=$(mktemp "$TMP_KCONFIG")
 TMP_DEFINED="${TMPDIR:-/tmp}/verify_defined.XXXXXX"
 TMP_DEFINED=$(mktemp "$TMP_DEFINED")
 
-trap 'rm -f "$TMP_LOOKUP" "$TMP_REQUESTED" "$TMP_DEFINED"' EXIT
+trap 'rm -f "$TMP_LOOKUP" "$TMP_REQUESTED" "$TMP_KCONFIG" "$TMP_DEFINED"' EXIT
 
 if [ -n "$SRCTREE" ]; then
 	# shellcheck disable=SC2016
 	find "$SRCTREE" -name 'Kconfig*' -type f -exec "$AWK" -v prefix="$CONFIG_PREFIX" '
-	$1 == "config" || $1 == "menuconfig" { print prefix $2 }
-	' {} + | sort -u > "$TMP_DEFINED"
+	function flush() {
+		if (sym != "")
+			print (transitional ? "T " : "D ") sym
+		sym = ""
+	}
+	FNR == 1 { flush() }
+	$1 == "config" || $1 == "menuconfig" {
+		flush()
+		sym = prefix $2
+		transitional = 0
+		next
+	}
+	$1 == "transitional" { transitional = 1 }
+	END { flush() }
+	' {} + | sort -u > "$TMP_KCONFIG"
+	sed -n 's/^D //p' "$TMP_KCONFIG" > "$TMP_DEFINED"
 fi
 
 # shellcheck disable=SC2016
@@ -177,8 +197,10 @@ while IFS="	" read -r entry src || [ -n "$entry" ]; do
 			continue
 		fi
 		if [ -n "$SRCTREE" ] && ! grep -qx "$sym" "$TMP_DEFINED"; then
-			printf 'SKIP %s: %s=%s, not defined by %s\n' \
-				"$src_name" "$sym" "$requested" "$SRCTREE"
+			why="not defined by"
+			! grep -qx "T $sym" "$TMP_KCONFIG" || why="transitional in"
+			printf 'SKIP %s: %s=%s, %s %s\n' \
+				"$src_name" "$sym" "$requested" "$why" "$SRCTREE"
 			skipped=$((skipped + 1))
 			continue
 		fi
