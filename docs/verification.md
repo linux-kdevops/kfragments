@@ -45,6 +45,8 @@ A fragment may also keep a symbol's old name for older trees.
 on 7.3 and later `PROC_SYSCTL` is absent and the check passes only with `-k`.
 A tree may also keep the old name as a `transitional` symbol, which Kconfig
 reads from an old `.config` and never writes; `-k` skips such a symbol too.
+`virt/virtio-fs.config` requests both `FUSE_DAX` and `FUSE_VDAX`, its 7.4 name,
+and 7.4 keeps `FUSE_DAX` that way.
 
 ## Verifying a defconfig
 
