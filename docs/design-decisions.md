@@ -252,6 +252,11 @@ userspace and misses most of the boot sequence. `KUNIT=y` plus
 `KUNIT_AUTORUN_ENABLED=y` runs the test suite at
 `late_initcall()`, which is what KUnit CI workflows expect.
 
+**`DRM=y` in `rust/drm.config`.** DRM is tristate, but the kernel
+crate compiles its `drm` module only under `CONFIG_DRM = "y"`
+(`rust/kernel/lib.rs`), and Rust DRM drivers such as Tyr depend on
+`DRM=y`. With `=m` the fragment would build none of what it is for.
+
 **`ACPI_TINY_POWER_BUTTON=y` in `acpi-poweroff.config`.** The driver
 initialises at `device_initcall()` and registers a power button
 handler before userspace starts. If `=m`, the module would not be
