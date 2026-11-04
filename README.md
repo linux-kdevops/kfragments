@@ -16,7 +16,7 @@ arch/       per-architecture (x86_64 / arm64 / riscv) knobs and extras
 fs/         filesystems
 storage/    block layer, device mapper, MD, NVMe, NVDIMM, CXL
 virt/       virtio device drivers, KVM host
-net/        iptables, nftables, Docker/Moby
+net/        iptables, nftables, IPVS, Docker/Moby
 security/   LSMs, IMA/EVM, crypto API and algorithms
 mem/        memory-management knobs (DAMON, KSM, NUMA, zswap)
 debug/      developer instrumentation and sanitizers
