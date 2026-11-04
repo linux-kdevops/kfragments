@@ -258,6 +258,11 @@ crate compiles its `drm` module only under `CONFIG_DRM = "y"`
 (`rust/kernel/lib.rs`), and Rust DRM drivers such as Tyr depend on
 `DRM=y`. With `=m` the fragment would build none of what it is for.
 
+**`FWCTL=y` and `USB=y` in `rust/abstractions.config`.** Both are
+tristate, but `RUST_FWCTL_ABSTRACTIONS` depends on `FWCTL=y`, and the
+kernel crate compiles its `usb` module only under `CONFIG_USB = "y"`
+(`rust/kernel/lib.rs`), as with `DRM=y` above.
+
 **`ACPI_TINY_POWER_BUTTON=y` in `acpi-poweroff.config`.** The driver
 initialises at `device_initcall()` and registers a power button
 handler before userspace starts. If `=m`, the module would not be
