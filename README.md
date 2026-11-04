@@ -15,6 +15,7 @@ core/       base kernel, modules, init system, boot, firmware, hardening
 arch/       per-architecture (x86_64 / arm64 / riscv) knobs and extras
 fs/         filesystems
 storage/    block layer, device mapper, MD, NVMe, NVDIMM, CXL
+gpu/        GPU drivers
 virt/       virtio device drivers, KVM host
 net/        iptables, nftables, IPVS, xfrm, Docker/Moby
 security/   LSMs, IMA/EVM, crypto API and algorithms

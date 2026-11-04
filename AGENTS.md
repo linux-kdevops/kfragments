@@ -9,8 +9,8 @@ QEMU/KVM guests, composed with the kernel's own
 ## Layout
 
 - `kernel/configs/<group>/` — feature fragments grouped by topic (`core`,
-  `arch`, `fs`, `storage`, `virt`, `net`, `security`, `mem`, `debug`, `test`,
-  `rust`, `perf`).
+  `arch`, `fs`, `storage`, `gpu`, `virt`, `net`, `security`, `mem`, `debug`,
+  `test`, `rust`, `perf`).
 - `kernel/configs/builtin/<group>/` — `=y` overrides mirroring the same paths.
 - `defconfigs/` — whole-kernel configs (e.g. the imageless VM kernel).
 - `scripts/verify_config.sh` — checks a merged `.config` (see Validation).
@@ -51,8 +51,8 @@ All commits must follow these rules.
 1. One commit per change. Atomic commits only; do not mix unrelated changes.
 2. Write the subject as `subsystem: summary` in the imperative mood, within 75
    characters. The subsystem is the area changed — a group name (`core`, `fs`,
-   `storage`, `virt`, `net`, `security`, `mem`, `arch`, `perf`, `rust`,
-   `debug`, `test`) or `defconfigs`, `scripts`, `docs`, `fragments`.
+   `storage`, `gpu`, `virt`, `net`, `security`, `mem`, `arch`, `perf`,
+   `rust`, `debug`, `test`) or `defconfigs`, `scripts`, `docs`, `fragments`.
 3. Wrap the commit body at 75 columns.
 4. Sign off with the git-configured identity (`git commit -s`, a
    `Signed-off-by` trailer). This certifies the [DCO](DCO).
