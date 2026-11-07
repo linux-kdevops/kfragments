@@ -57,14 +57,14 @@ All commits must follow these rules.
 4. Sign off with the git-configured identity (`git commit -s`, a
    `Signed-off-by` trailer). This certifies the [DCO](DCO).
 5. Add no tag for the use of a tool: Linux v7.4-rc1 dropped `Assisted-by`
-   in 1e035297ffda ("docs: remove Assisted-by references"). The kernel's
-   `Documentation/process/generated-content.rst` asks for tool use to be
-   told in cover letters and changelogs instead: the cover letter, or the
-   pull request, says how tools were used, and a commit message names the
-   tool that found the problem it fixes. A co-author gets a
-   `Co-developed-by` immediately followed by their own `Signed-off-by`, as
-   the kernel's `Documentation/process/submitting-patches.rst` requires, and
-   the last `Signed-off-by` is always the committer's. Older commits carry
+   in 1e035297ffda ("docs: remove Assisted-by references"). As the
+   kernel's `Documentation/process/generated-content.rst` asks, the cover
+   letter or the pull request says how tools were used, and a commit
+   message names the tool that found the problem it fixes. A co-author
+   gets a `Co-developed-by` immediately followed by their own
+   `Signed-off-by`, as the kernel's
+   `Documentation/process/submitting-patches.rst` requires, and the last
+   `Signed-off-by` is always the committer's. Older commits carry
    `Assisted-by` or `Generated-by`; leave them alone.
 6. Run `scripts/verify_config.sh` on an affected merge before committing a
    fragment change, and on the expanded defconfig before committing a
