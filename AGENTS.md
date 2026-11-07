@@ -56,19 +56,16 @@ All commits must follow these rules.
 3. Wrap the commit body at 75 columns.
 4. Sign off with the git-configured identity (`git commit -s`, a
    `Signed-off-by` trailer). This certifies the [DCO](DCO).
-5. Mark AI-assisted work with an `Assisted-by: LLM` trailer ahead of the
-   `Signed-off-by` that closes the message. A co-author gets a
+5. Add no tag for the use of a tool: Linux v7.4-rc1 dropped `Assisted-by`
+   in 1e035297ffda ("docs: remove Assisted-by references"). The kernel's
+   `Documentation/process/generated-content.rst` asks for tool use to be
+   told in cover letters and changelogs instead: the cover letter, or the
+   pull request, says how tools were used, and a commit message names the
+   tool that found the problem it fixes. A co-author gets a
    `Co-developed-by` immediately followed by their own `Signed-off-by`, as
    the kernel's `Documentation/process/submitting-patches.rst` requires, and
-   the last `Signed-off-by` is always the committer's. `Assisted-by` is the
-   kernel's own tag, from `Documentation/process/coding-assistants.rst`
-   (added by 78d979db6cef, v7.0-rc1, required by 6252e5c1c20e, v7.1-rc1, and
-   given its form by 816d9992d9ed, v7.3-rc1). Its full form is
-   `Assisted-by: LLM [TOOL1] [TOOL2]`, where the optional names are
-   specialized analysis tools actually run (coccinelle, sparse, smatch,
-   clang-tidy) and never basic ones such as git, gcc, make or an editor, so
-   the bare tag is the usual form. Commits predating this carry
-   `Generated-by: Claude AI`; leave them alone.
+   the last `Signed-off-by` is always the committer's. Older commits carry
+   `Assisted-by` or `Generated-by`; leave them alone.
 6. Run `scripts/verify_config.sh` on an affected merge before committing a
    fragment change, and on the expanded defconfig before committing a
    defconfig change (docs/verification.md).
