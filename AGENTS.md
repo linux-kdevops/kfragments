@@ -23,7 +23,9 @@ QEMU/KVM guests, composed with the kernel's own
   `=m`; the matching `builtin/` fragment sets them `=y` and inlines every
   tristate dependency so it is self-contained.
 - Fragment file names are kebab-case (`vm-debug.config`,
-  `xarray-no-multi.config`).
+  `xarray-no-multi.config`), but for an architecture's name, which keeps
+  kbuild's `ARCH` (`x86_64.config`, `kvm-x86_64.config`) so a consumer can
+  substitute it.
 - **SPDX.** Follow the kernel's rule
   (`Documentation/process/license-rules.rst`): an `SPDX-License-Identifier:
   copyleft-next-0.3.1` goes on source code, scripts, and structured docs. Here
