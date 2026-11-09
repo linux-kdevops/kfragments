@@ -65,6 +65,42 @@ This is the entire model. There is no Python driver, no custom merge
 logic, no profile system: a plain line-by-line merge, plus `-y` to
 make `builtin/` layering order-independent.
 
+### Fragments that disagree
+
+Two feature fragments can disagree the same way, when Kconfig needs a
+tristate built in for one and the other inlines it as `=m`. Passing
+`-y` to both `merge_config.sh` and `verify_config.sh` keeps the `=y`
+in either order; without it the fragment listed last wins:
+
+- `PHYLIB`: `rust/abstractions.config` needs `=y` for
+  `RUST_PHYLIB_ABSTRACTIONS`, which `net/core-extras.config`'s `=m`,
+  listed later, drops.
+- `DRM`: `rust/drm.config` needs `=y` (see "Kconfig exceptions"). The
+  `=m` of `gpu/i915.config` or `gpu/i915-extras.config`, listed later,
+  leaves the kernel crate's `drm` module unbuilt, which no symbol
+  shows, so `verify_config.sh` cannot report it.
+- `CONFIGFS_FS`: `storage/block-test-devices.config` selects it `=y`
+  through `FAULT_INJECTION_CONFIGFS`. Kconfig keeps the `=y`, but
+  `verify_config.sh` reports the `=m` of `fs/configfs.config`,
+  `fs/gfs2.config`, `storage/rnull.config`, `storage/md-extras.config`,
+  `rust/rust-sample-configfs.config` or `rust/rust-samples-all.config`,
+  listed later, as a mismatch.
+
+Other fragments set a symbol to the opposite of what another sets on
+purpose. Neither value is `=m`, so `-y` does not apply and the
+fragment listed last wins:
+
+- `test/kunit-autorun.config` turns `KUNIT_AUTORUN_ENABLED` on, which
+  `test/kunit.config` turns off; list it after `kunit.config`.
+- `rust/gendwarfksyms.config` picks `GENDWARFKSYMS` over the
+  `GENKSYMS` of `rust/modversions.config`; list it after
+  `modversions.config`.
+- `core/modules-extras.config` turns `MODULE_DEBUG_AUTOLOAD_DUPS` on,
+  which `debug/modules-debug.config` turns off.
+- `test/xarray-no-multi.config` turns `HUGETLBFS` off, which
+  `mem/hugetlb.config` needs, so that nothing selects `XARRAY_MULTI`.
+  The two do not compose in either order.
+
 ### scripts/verify_config.sh
 
 After `make olddefconfig`, every value a user requested should appear
