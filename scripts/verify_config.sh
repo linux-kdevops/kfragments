@@ -19,8 +19,11 @@
 # transitional one (an old name after a rename), is reported as skipped
 # rather than as a mismatch.
 #
+# With -y, a later =m does not replace an earlier =y, as with
+# merge_config.sh -y; pass it when the merge did.
+#
 # Usage:
-#   verify_config.sh [-k <srctree>] <dotconfig> <fragment> [<fragment> ...]
+#   verify_config.sh [-k <srctree>] [-y] <dotconfig> <fragment> [<fragment> ...]
 #
 # Example:
 #   verify_config.sh ../build/.config \
@@ -35,24 +38,37 @@ CONFIG_PREFIX=${CONFIG_-CONFIG_}
 AWK="${AWK:-awk}"
 
 usage() {
-	printf 'Usage: %s [-k <srctree>] <dotconfig> <fragment> [<fragment> ...]\n\n' "$0"
+	printf 'Usage: %s [-k <srctree>] [-y] <dotconfig> <fragment> [<fragment> ...]\n\n' "$0"
 	printf 'Verify that config values requested in fragments match the\n'
 	printf 'final .config. Exit code 0 if all match, 1 if any mismatch.\n'
 	printf 'With -k, skip symbols the Kconfig of <srctree> does not define,\n'
 	printf 'or keeps only as transitional ones.\n'
+	printf 'With -y, keep an earlier =y over a later =m, as merge_config.sh -y.\n'
 	exit 1
 }
 
 SRCTREE=
-if [ "$1" = "-k" ]; then
-	[ "$#" -ge 2 ] || usage
-	SRCTREE="$2"
-	shift 2
-	if [ ! -d "$SRCTREE" ]; then
-		printf 'error: %s is not a directory\n' "$SRCTREE" >&2
-		exit 1
-	fi
-fi
+BUILTIN=false
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+	-k)
+		[ "$#" -ge 2 ] || usage
+		SRCTREE="$2"
+		shift 2
+		if [ ! -d "$SRCTREE" ]; then
+			printf 'error: %s is not a directory\n' "$SRCTREE" >&2
+			exit 1
+		fi
+		;;
+	-y)
+		BUILTIN=true
+		shift
+		;;
+	*)
+		break
+		;;
+	esac
+done
 
 if [ "$#" -lt 2 ]; then
 	usage
@@ -125,10 +141,11 @@ fi
 }
 ' "$DOTCONFIG" > "$TMP_LOOKUP"
 
-# Merge all fragments: last value wins (same as merge_config.sh).
+# Merge all fragments: last value wins (same as merge_config.sh), except
+# that with -y a =m does not replace a =y.
 # Output: CONFIG_FOO=value with source fragment name.
 # shellcheck disable=SC2016
-"$AWK" -v prefix="$CONFIG_PREFIX" '
+"$AWK" -v prefix="$CONFIG_PREFIX" -v builtin="$BUILTIN" '
 BEGIN { n = 0 }
 {
 	# Handle "# CONFIG_FOO is not set" form
@@ -152,6 +169,8 @@ BEGIN { n = 0 }
 		val = substr($0, eq + 1)
 		# Validate symbol name
 		if (sym !~ /^CONFIG_[A-Za-z0-9_]+$/) next
+		if (builtin == "true" && val == "m" && requested[sym] == "y")
+			next
 		requested[sym] = val
 		source[sym] = FILENAME
 		if (!(sym in order)) { order[sym] = n++ }

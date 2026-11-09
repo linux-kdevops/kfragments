@@ -31,8 +31,9 @@ scripts/verify_config.sh -k <linux> ../build/.config \
 
 `$C` is this project's `kernel/configs/` directory and `<linux>` the kernel
 tree. Pass the built `.config`, then the same fragments, in the same order, you
-gave to `merge_config.sh`. Run it after every fragment change before
-committing.
+gave to `merge_config.sh`, and `-y` if the merge had it: `merge_config.sh -y`
+keeps an earlier `=y` over a later `=m`, and without `-y` the script expects
+the `=m`. Run it after every fragment change before committing.
 
 A fragment or defconfig may name a symbol only an out-of-tree branch defines,
 such as the Rust XArray ones. On a tree without it, that symbol is absent for

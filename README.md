@@ -113,7 +113,7 @@ recovery kernel where modprobe is not available).
 `scripts/verify_config.sh` checks that the values you requested in the
 fragments actually appear in the final `.config`. It handles the
 last-wins rule and prints a summary of `=y`/`=m` totals. Pass `-k`
-the kernel tree, `<linux>` below;
+the kernel tree, `<linux>` below, and `-y` if the merge had it;
 [docs/verification.md](docs/verification.md) explains why.
 
 ```sh

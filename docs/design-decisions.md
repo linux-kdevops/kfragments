@@ -71,11 +71,11 @@ After `make olddefconfig`, every value a user requested should appear
 in the final `.config`. Symbols can be silently dropped for three
 reasons: unsatisfied Kconfig dependencies, symbols removed upstream,
 or an override from a later fragment. `scripts/verify_config.sh`
-replays the last-wins merge and compares the resulting key/value pairs
-against the final `.config`, reporting any mismatch. A `.config`
-summary (user `=y`/`=m` and infrastructure `=y`/`=m` totals) is
-printed at the end so regressions in fragment count are visible at a
-glance.
+replays the last-wins merge, `-y` included, and compares the
+resulting key/value pairs against the final `.config`, reporting any
+mismatch. A `.config` summary (user `=y`/`=m` and infrastructure
+`=y`/`=m` totals) is printed at the end so regressions in fragment
+count are visible at a glance.
 
 ## `=m` as the default
 
